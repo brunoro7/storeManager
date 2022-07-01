@@ -8,6 +8,9 @@ chai.use(chaiAsPromised);
 
 describe('controllers/productsControllers', () => {
   beforeEach(sinon.restore);
+  const req = {
+    params: { id: 1},
+  };
   const res = {
     status: sinon.stub().callsFake(() => res),
     json: sinon.stub().returns(),
@@ -46,12 +49,12 @@ describe('controllers/productsControllers', () => {
       chai.expect(productsControllers.getProduct(0)).to.eventually.be.undefined;
     });
 
-    // it('3- Deve retornar um res.status como 200 e um res.json;', async () => {
-    //   sinon.stub(productsService, 'getById').resolves([{ id: 1 }]);
-    //   await productsControllers.getProduct({}, res);
+    it('3- Deve retornar um res.status como 200 e um res.json;', async () => {
+      sinon.stub(productsService, 'getById').resolves(req.params.id);
+      await productsControllers.getProduct(req, res);
 
-    //   chai.expect(res.status.getCall(0).args[0]).to.be.equal(200);
-    //   // chai.expect(res.json.getCall(0).args[0]).to.be.deep.equal({});
-    // });
+      chai.expect(res.status.getCall(0).args[0]).to.be.equal(200);
+      chai.expect(res.json.getCall(0).args[0]).to.be.deep.equal(productsList);
+    });
   });
 });

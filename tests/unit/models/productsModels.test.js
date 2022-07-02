@@ -17,7 +17,7 @@ describe('models/productsModel', () => {
     });
 
     it('2- Deve disparar um erro caso retorne uma lista vazia;', () => {
-      sinon.stub(db, 'query').resolves([{ id: 1, name: 'teste'}]);
+      sinon.stub(db, 'query').resolves([]);
       chai.expect(productsModel.getProductsList()).to.eventually.be.undefined;
     });
 
@@ -54,7 +54,7 @@ describe('models/productsModel', () => {
   describe('addProductOnList', () => {
     it('1- Deve disparar um erro caso o db.query dispare um erro;', () => {
       sinon.stub(db, 'query').rejects;
-      chai.expect(productsModel.addProductOnList(0)).to.eventually.be.rejected;
+      chai.expect(productsModel.addProductOnList({})).to.eventually.be.rejected;
     });
 
     it('2- Deve disparar um erro caso retorne um objeto vazio;', () => {
@@ -62,10 +62,11 @@ describe('models/productsModel', () => {
       chai.expect(productsModel.addProductOnList(0)).to.eventually.be.undefined;
     });
 
-    it('3- Deve retornar um objeto, caso o db.query responda um objeto;', async () => {
-      sinon.stub(db, 'query').resolves([{}]);
+    // it('3- Deve retornar um objeto, caso o db.query responda um objeto;', async () => {
+    //   const data = { name: 'teste01' };
+    //   sinon.stub(db, 'query').resolves(data);
 
-      chai.expect(await productsModel.addProductOnList(0)).to.deep.equal({});
-    });
+    //   chai.expect(await productsModel.addProductOnList(data).to.deep.equal('teste01'));
+    // });
   });
 });

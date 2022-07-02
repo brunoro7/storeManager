@@ -1,6 +1,7 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const sinon = require('sinon');
+
 const productsModel = require('../../../models/productsModel');
 const productsService = require('../../../services/productsService');
 
@@ -55,6 +56,24 @@ describe('services/productsService', () => {
       sinon.stub(productsModel, 'getProductById').resolves([{}]);
 
       chai.expect(await productsService.getById(0)).to.be.deep.equal({});
+    });
+  });
+
+  describe('addProduct', () => {
+    it('1- Deve disparar um erro caso o db.query dispare um erro;', () => {
+      sinon.stub(productsModel, 'addProductOnList').rejects;
+      chai.expect(productsService.addProduct()).to.eventually.be.rejected;
+    });
+
+    it('2- Deve disparar um erro caso não retorne um "id";', () => {
+      sinon.stub(productsModel, 'addProductOnList').resolves({});
+      chai.expect(productsService.addProduct()).to.eventually.be.undefined;
+    });
+
+    it('3- Deve retornar um "id";', async () => {
+      sinon.stub(productsModel, 'addProductOnList').resolves([{ id: 1 }]);
+
+      chai.expect(await productsService.addProduct()).to.be.deep.equal({ id: 1 });
     });
   });
 });

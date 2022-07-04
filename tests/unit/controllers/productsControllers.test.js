@@ -9,7 +9,7 @@ chai.use(chaiAsPromised);
 describe('controllers/productsControllers', () => {
   beforeEach(sinon.restore);
   const req = {
-    params: { id: 1},
+    params: { id: 1 },
   };
   const res = {
     status: sinon.stub().callsFake(() => res),
@@ -18,43 +18,62 @@ describe('controllers/productsControllers', () => {
   const productsList = [{ id: 1, name: 'teste01' }, { id: 2, name: 'teste02' }];
 
   describe('getProducts', () => {
-    it('1- Deve disparar um erro, caso seja disparado um erro;', () => {
+    it('1- Deve disparar um erro, caso productsService.getProducts dispare um erro;', () => {
       sinon.stub(productsService, 'getProducts').rejects();
-      chai.expect(productsControllers.getProducts({}, {})).to.eventually.be.rejected;
+      return chai.expect(productsControllers.getProducts({}, {})).to.eventually.be.rejected;
     });
 
-    it('2- Deve disparar um erro, caso o service não retorne um lista;', () => {
-      sinon.stub(productsService, 'getProducts').resolves([]);
-      chai.expect(productsControllers.getProducts()).to.eventually.be.undefined;
-    });
-
-    it('3- Deve retornar um res.status como 200 e um res.json;', async () => {
+    it('2- Deve retornar um res.status como 200 e um res.json;', async () => {
       sinon.stub(productsService, 'getProducts').resolves(productsList);
       await productsControllers.getProducts({}, res);
       
-      chai.expect(res.status.getCall(0).args[0]).to.be.equal(200);
-      chai.expect(res.json.getCall(0).args[0]).to.be.deep.equal([{ id: 1, name: 'teste01' }, { id: 2, name: 'teste02' }]);
+      return chai.expect(res.status.getCall(0).args[0]).to.be.equal(200);
     });
   });
 
   describe('getProduct', () => {
-    it('1- Deve disparar um erro caso o db.query dispare um erro;', () => {
+    it('1- Deve disparar um erro caso o productsService.getById dispare um erro;', () => {
       sinon.stub(productsService, 'getById').rejects();
-      chai.expect(productsControllers.getProduct({}, {})).to.eventually.be.rejected;
-    });
-
-    it('2- Deve disparar um erro caso não retorne um objeto;', () => {
-      sinon.stub(productsService, 'getById').resolves([{}]);
-
-      chai.expect(productsControllers.getProduct(0)).to.eventually.be.undefined;
+      return chai.expect(productsControllers.getProduct({}, {})).to.eventually.be.rejected;
     });
 
     it('3- Deve retornar um res.status como 200 e um res.json;', async () => {
       sinon.stub(productsService, 'getById').resolves(req.params.id);
+      
       await productsControllers.getProduct(req, res);
-
-      chai.expect(res.status.getCall(0).args[0]).to.be.equal(200);
-      chai.expect(res.json.getCall(0).args[0]).to.be.deep.equal(productsList);
+      return chai.expect(res.status.getCall(0).args[0]).to.be.equal(200);
     });
+  });
+
+  describe('addNewProduct', () => {
+    it('1- Deve disparar um erro caso o productsService.validateBodyAdd dispare um erro;', () => {
+      sinon.stub(productsService, 'validateBodyAdd').rejects();
+      return chai.expect(productsControllers.addNewProduct({}, {})).to.eventually.be.rejected;
+    });
+
+    it('2- Deve disparar um erro caso o productsService.addProduct dispare um erro;', () => {
+      sinon.stub(productsService, 'validateBodyAdd').resolves();
+      sinon.stub(productsService, 'addProduct').rejects();
+
+      return chai.expect(productsControllers.addNewProduct({}, {})).to.eventually.be.rejected;
+    });
+
+    it('3- Deve disparar um erro caso o productsService.getById dispare um erro;', async () => {
+      sinon.stub(productsService, 'validateBodyAdd').resolves();
+      sinon.stub(productsService, 'addProduct').resolves();
+      sinon.stub(productsService, 'getById').rejects();
+
+      return chai.expect(productsControllers.addNewProduct({}, {})).to.eventually.be.rejected
+    });
+
+    // it('4- Deve retornar o res.status com 201 e o res.json;', async () => {
+    //   sinon.stub(productsService, 'validateBodyAdd').resolves();
+    //   sinon.stub(productsService, 'addProduct').resolves();
+    //   sinon.stub(productsService, 'getById').resolves();
+
+    // await productsControllers.addNewProduct({}, res);
+    // return chai.expect(res.status.getCall(0).args[0]).to.equal(201);
+
+    // });
   });
 });

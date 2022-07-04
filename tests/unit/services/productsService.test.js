@@ -13,17 +13,11 @@ describe('services/productsService', () => {
   describe('getProducts', () => {
     it('1- Deve disparar um erro, caso seja disparado um erro;', () => {
       sinon.stub(productsModel, 'getProductsList').rejects();
-      chai.expect(productsService.getProducts())
-        .to.eventually.be.rejected;
-    });
-    
-    it('2- Deve disparar um erro, caso o model não retorne uma lista;', () => {
-      sinon.stub(productsModel, 'getProductsList').resolves({});
-      chai.expect(productsService.getProducts())
+      return chai.expect(productsService.getProducts())
         .to.eventually.be.rejected;
     });
 
-    it('3- Deve retornar uma lista com itens que tenham "id" e "name";', async () => {
+    it('2- Deve retornar uma lista de objetos, que tenham "id" e "name";', async () => {
       const productsListTest = [{ id: 1, name: 'Traje de encolhimento' }];
 
       sinon.stub(productsModel, 'getProductsList').resolves(productsListTest);
@@ -37,43 +31,70 @@ describe('services/productsService', () => {
       // chai.expect(result[0].name).to.equal('Traje de encolhimento');
 
       // Esta linha substiui a necessidade das anteriores, pois, eles testara o retorno que vem dentro do result;
-      chai.expect(result).to.deep.equal([{ id: 1, name: 'Traje de encolhimento' }]);
+      return chai.expect(result).to.deep.equal([{ id: 1, name: 'Traje de encolhimento' }]);
     });
   });
 
   describe('getById', () => {
-    it('1- Deve disparar um erro caso o db.query dispare um erro;', () => {
-      sinon.stub(productsModel, 'getProductById').rejects;
-      chai.expect(productsService.getById(0)).to.eventually.be.rejected;
+    it('1- Deve disparar um erro caso o productsModel.getProductById dispare um erro;', () => {
+      sinon.stub(productsModel, 'getProductById').rejects();
+      return chai.expect(productsService.getById(0)).to.eventually.be.rejected;
     });
 
-    it('2- Deve disparar um erro caso não retorne um objeto;', () => {
-      sinon.stub(productsModel, 'getProductById').resolves([]);
-      chai.expect(productsService.getById(0)).to.eventually.be.undefined;
+    it('2- Deve disparar um erro caso o objeto não exista;', () => {
+      sinon.stub(productsModel, 'getProductById').resolves(false);
+      return chai.expect(productsService.getById(0)).to.eventually.throw;
     });
 
     it('3- Deve retornar um objeto;', async () => {
       sinon.stub(productsModel, 'getProductById').resolves([{}]);
 
-      chai.expect(await productsService.getById(0)).to.be.deep.equal({});
+      return chai.expect(await productsService.getById(0)).to.be.deep.equal({});
     });
   });
 
   describe('addProduct', () => {
-    it('1- Deve disparar um erro caso o db.query dispare um erro;', () => {
-      sinon.stub(productsModel, 'addProductOnList').rejects;
-      chai.expect(productsService.addProduct()).to.eventually.be.rejected;
+    it('1- Deve disparar um erro caso o productsModel.addProductOnList dispare um erro;', () => {
+      sinon.stub(productsModel, 'addProductOnList').rejects();
+      return chai.expect(productsService.addProduct({})).to.eventually.be.rejected;
     });
 
-    it('2- Deve disparar um erro caso não retorne um "id";', () => {
-      sinon.stub(productsModel, 'addProductOnList').resolves({});
-      chai.expect(productsService.addProduct()).to.eventually.be.undefined;
+    it('2- Deve retornar um "id";', () => {
+      sinon.stub(productsModel, 'addProductOnList').resolves(1);
+      return chai.expect(productsService.addProduct({})).to.eventually.equal(1);
+    });
+  });
+
+  describe('validateBodyAdd', () => {
+    const value = { name: 'teste' };
+    const valueLength = { name: 'ops' };
+
+    it('1- Deve disparar um erro caso o productsModel.getProductById dispare um erro;', () => {
+      sinon.stub(productsModel, 'getProductById').rejects();
+      return chai.expect(productsService.validateBodyAdd({})).to.eventually.be.rejected;
     });
 
-    // it('3- Deve retornar um "id";', async () => {
-    //   sinon.stub(productsModel, 'addProductOnList').resolves([{ id: 1 }]);
+    it('2- Deve disparar um erro caso o "name" seja undefined;', () => {
+      sinon.stub(productsModel, 'getProductById').resolves(undefined);
+      return chai.expect(productsService.validateBodyAdd(value)).to.eventually.throw;
+    });
 
-    //   chai.expect(await productsService.addProduct()).to.be.deep.equal({ id: 1 });
-    // });
+    it('3- Deve disparar um erro caso o "name" seja "";', () => {
+      sinon.stub(productsModel, 'getProductById').resolves("");
+      return chai.expect(productsService
+        .validateBodyAdd(value)).to.eventually.throw;
+    });
+
+    it('4- Deve disparar um erro caso o "name" tenha menos que 5 caracteres;', () => {
+      sinon.stub(productsModel, 'getProductById').resolves(valueLength);
+      return chai.expect(productsService
+        .validateBodyAdd(valueLength)).to.eventually.throw;
+    });
+
+    it('5- Deve retornar um objeto;', async () => {
+      sinon.stub(productsModel, 'getProductById').resolves(value);
+
+      return chai.expect(await productsService.validateBodyAdd(value)).to.be.deep.equal({ name: 'teste' });
+    });
   });
 });

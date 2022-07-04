@@ -9,6 +9,16 @@ const productsControllers = {
     const product = await productsService.getById(req.params.id);
     res.status(200).json(product);
   },
+  async addNewProduct(req, res) {
+    // validar o body
+    const data = await productsService.validateBodyAdd(req.body);
+    // adicionar o product
+    const id = await productsService.addProduct(data);
+    // retornar o product
+    const product = await productsService.getById(id);
+
+    res.status(201).json(product);
+  },
 };
 
 module.exports = productsControllers;

@@ -4,9 +4,13 @@ const productsControllers = require('../controllers/productsControllers');
 
 const productRoute = Router();
 
-productRoute.get('/', productsControllers.getProducts);
+productRoute.delete('/:id', productsControllers.deleteProduct);
+
+// productRoute.put('/:id', productsControllers.updateProduct);
 
 productRoute.get('/:id', productsControllers.getProduct);
+
+productRoute.get('/', productsControllers.getProducts);
 
 productRoute.post('/', productsControllers.addNewProduct);
 

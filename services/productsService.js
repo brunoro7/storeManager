@@ -47,6 +47,17 @@ const productsService = {
     }
     return value;
   },
-};
+
+  async deleteProduct(id) {
+    await productsModel.getProductById(id);
+    await productsModel.deleteProduct(id);
+
+    // const product = productById[0];
+    // const productsList = await productsModel.getProductsList();
+    // productsList.filter((item) => item !== product);
+    // const result = await productsService.getById(id);
+    // const result = await productsModel.getProductById(id);
+    },
+  };
 
 module.exports = productsService;

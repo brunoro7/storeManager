@@ -20,6 +20,14 @@ const productsModel = {
     const [{ insertId }] = await db.query(sql, [data.name]);
     return insertId;
   },
+
+  async deleteProduct(id) {
+    const sql = 'DELETE FROM StoreManager.products WHERE id = ?;';
+
+    await db.query(sql, [id]);
+
+    return true;
+  },
 };
 
 module.exports = productsModel;

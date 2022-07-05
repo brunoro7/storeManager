@@ -52,12 +52,8 @@ const productsService = {
     await productsModel.getProductById(id);
     await productsModel.deleteProduct(id);
 
-    // const product = productById[0];
-    // const productsList = await productsModel.getProductsList();
-    // productsList.filter((item) => item !== product);
-    // const result = await productsService.getById(id);
-    // const result = await productsModel.getProductById(id);
-    },
-  };
+    return true;
+  },
+};
 
 module.exports = productsService;

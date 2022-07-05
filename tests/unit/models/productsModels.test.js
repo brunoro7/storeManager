@@ -68,4 +68,17 @@ describe('models/productsModel', () => {
       return chai.expect(productsModel.addProductOnList({})).to.eventually.equal(1);
     });
   });
+
+  describe('deleteProduct', () => {
+    it('1- Deve disparar um erro caso o db.query dispare um erro;', () => {
+      sinon.stub(db, 'query').rejects();
+      return chai.expect(productsModel.deleteProduct()).to.eventually.be.rejected;
+    });
+    
+    it('3- Deve retornar "true" caso productsModel.deleteProduct não dispare nenhum erro', () => {
+      sinon.stub(db, 'query').resolves();
+
+      return chai.expect(productsModel.deleteProduct()).to.eventually.equal(true);
+    });
+  });
 });

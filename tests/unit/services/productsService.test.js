@@ -97,4 +97,25 @@ describe('services/productsService', () => {
       return chai.expect(await productsService.validateBodyAdd(value)).to.be.deep.equal({ name: 'teste' });
     });
   });
+
+  describe('deleteProduct', () => {
+    it('1- Deve disparar um erro caso o productsModel.deleteProduct dispare um erro;', () => {
+      sinon.stub(productsModel, 'getProductById').rejects();
+      return chai.expect(productsService.deleteProduct()).to.eventually.be.rejected;
+    });
+
+    it('2- Deve disparar um erro caso o productsModel.deleteProduct dispare um erro;', () => {
+      sinon.stub(productsModel, 'getProductById').resolves();
+      sinon.stub(productsModel, 'deleteProduct').rejects();
+      return chai.expect(productsService.deleteProduct()).to.eventually.be.rejected;
+    });
+
+    it('3- Deve retornar "true" caso productsModel.deleteProduct não dispare nenhum erro', () => {
+      const productTest = { id: 1, name: "teste" };
+      sinon.stub(productsModel, 'getProductById').resolves();
+      sinon.stub(productsModel, 'deleteProduct').resolves();
+
+      return chai.expect(productsService.deleteProduct()).to.eventually.equal(true);
+    });
+  });
 });

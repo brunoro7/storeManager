@@ -76,4 +76,24 @@ describe('controllers/productsControllers', () => {
 
     // });
   });
+
+  describe('deleteProduct', () => {
+    it('1- Deve disparar um erro caso o productsService.getById dispare um erro;', () => {
+      sinon.stub(productsService, 'getById').rejects();
+      return chai.expect(productsControllers.deleteProduct()).to.eventually.be.rejected;
+    });
+
+    it('2- Deve disparar um erro caso o productsService.deleteProduct dispare um erro;', () => {
+      sinon.stub(productsService, 'getById').resolves(req.params.id);
+      sinon.stub(productsService, 'deleteProduct').rejects();
+      return chai.expect(productsControllers.deleteProduct()).to.eventually.be.rejected;
+    });
+
+    // it.only('3- Deve retornar um res.status com 204 caso productsControllers.deleteProduct não dispare nenhum erro', async () => {
+    //   sinon.stub(productsService, 'getById').resolves({ id: 1 });
+    //   sinon.stub(productsService, 'deleteProduct').resolves({ id: 1 }, res);
+
+    //   return chai.expect(await productsControllers.deleteProduct(1)).to.eventually.be.equal(204);
+    // });
+  });
 });

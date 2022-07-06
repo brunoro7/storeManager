@@ -54,6 +54,12 @@ const productsService = {
 
     return true;
   },
+
+  async updateProduct(data) {
+    await productsModel.updateProduct(data);
+
+    return true;
+  },
 };
 
 module.exports = productsService;

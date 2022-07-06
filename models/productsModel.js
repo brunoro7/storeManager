@@ -28,6 +28,14 @@ const productsModel = {
 
     return true;
   },
+
+  async updateProduct({ name, id }) {
+    const sql = 'UPDATE StoreManager.products SET name = ? WHERE id = ?;';
+
+    await db.query(sql, [name, id]);
+
+    return true;
+  },
 };
 
 module.exports = productsModel;

@@ -37,7 +37,7 @@ describe('controllers/productsControllers', () => {
       return chai.expect(productsControllers.getProduct({}, {})).to.eventually.be.rejected;
     });
 
-    it('3- Deve retornar um res.status como 200 e um res.json;', async () => {
+    it('2- Deve retornar um res.status como 200 e um res.json;', async () => {
       sinon.stub(productsService, 'getById').resolves(req.params.id);
       
       await productsControllers.getProduct(req, res);
@@ -89,11 +89,14 @@ describe('controllers/productsControllers', () => {
       return chai.expect(productsControllers.deleteProduct()).to.eventually.be.rejected;
     });
 
-    // it.only('3- Deve retornar um res.status com 204 caso productsControllers.deleteProduct não dispare nenhum erro', async () => {
-    //   sinon.stub(productsService, 'getById').resolves({ id: 1 });
-    //   sinon.stub(productsService, 'deleteProduct').resolves({ id: 1 }, res);
+    // it('3- Deve retornar um res.status com 204 caso productsControllers.deleteProduct não dispare nenhum erro', async () => {
+    //   sinon.stub(productsService, 'getById').resolves(req.params.id);
+    //   sinon.stub(productsService, 'deleteProduct').resolves(req.params.id);
 
-    //   return chai.expect(await productsControllers.deleteProduct(1)).to.eventually.be.equal(204);
+
+    //   // await productsControllers.getProduct(req, res);
+    //   await productsControllers.deleteProduct(req, res);
+    //   return chai.expect(res.status.getCall(0).args[0]).to.be.equal(204);
     // });
   });
 });

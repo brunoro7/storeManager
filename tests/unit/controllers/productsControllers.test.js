@@ -99,4 +99,35 @@ describe('controllers/productsControllers', () => {
     //   return chai.expect(res.status.getCall(0).args[0]).to.be.equal(204);
     // });
   });
+
+  describe('updateProduct', () => {
+    it('1- Deve disparar um erro caso o productsService.validateBodyAdd dispare um erro;', () => {
+      sinon.stub(productsService, 'validateBodyAdd').rejects();
+      return chai.expect(productsControllers.updateProduct()).to.eventually.be.rejected;
+    });
+
+    it('2- Deve disparar um erro caso o productsService.updateProduct dispare um erro;', () => {
+      sinon.stub(productsService, 'validateBodyAdd').resolves(req.body);
+      sinon.stub(productsService, 'updateProduct').rejects();
+            
+      return chai.expect(productsControllers.updateProduct()).to.eventually.be.rejected;
+    });
+
+    it('3- Deve disparar um erro caso o productsService.getById dispare um erro;', () => {
+      sinon.stub(productsService, 'validateBodyAdd').resolves(req.body);
+      sinon.stub(productsService, 'updateProduct').resolves({ name: "teste", id: 1 });
+      sinon.stub(productsService, 'getById').rejects();
+
+      return chai.expect(productsControllers.updateProduct()).to.eventually.be.rejected;
+    });
+
+    // it.only('4- Deve disparar retornar um res.status com 200 e um res.json não dispare um erro;', async () => {
+    //   sinon.stub(productsService, 'validateBodyAdd').resolves({ name: "teste" });
+    //   sinon.stub(productsService, 'updateProduct').resolves({ status: 200, json: { name: "teste", id: 1 } });
+    //   sinon.stub(productsService, 'getById').resolves({ name: "teste", id: 1 });
+
+    //   await productsControllers.updateProduct(req, res);
+    //   return chai.expect(res.status.getCall(0).args[0]).to.be.equal(200, json);
+    // });
+  });
 });

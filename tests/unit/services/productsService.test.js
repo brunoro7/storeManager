@@ -111,11 +111,24 @@ describe('services/productsService', () => {
     });
 
     it('3- Deve retornar "true" caso productsModel.deleteProduct não dispare nenhum erro', () => {
-      const productTest = { id: 1, name: "teste" };
+      // const productTest = { id: 1, name: "teste" };
       sinon.stub(productsModel, 'getProductById').resolves();
       sinon.stub(productsModel, 'deleteProduct').resolves();
 
       return chai.expect(productsService.deleteProduct()).to.eventually.equal(true);
+    });
+  });
+
+  describe('updateProduct', () => {
+    it('1- Deve disparar um erro caso o productsModel.updateProduct dispare um erro;', () => {
+      sinon.stub(productsModel, 'updateProduct').rejects();
+      return chai.expect(productsService.updateProduct()).to.eventually.be.rejected;
+    });
+
+    it('2- Deve retornar "true" caso productsModel.updateProduct não dispare nenhum erro', () => {
+      sinon.stub(productsModel, 'updateProduct').resolves();
+
+      return chai.expect(productsService.updateProduct()).to.eventually.equal(true);
     });
   });
 });

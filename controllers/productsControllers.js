@@ -29,8 +29,8 @@ const productsControllers = {
     const { name } = req.body;
     const { id } = req.params;
     const data = { name, id };
-    await productsService.validateBodyAdd(req.body);
 
+    await productsService.validateBodyAdd(req.body);
     await productsService.updateProduct(data);
     
     const product = await productsService.getById(req.params.id);
